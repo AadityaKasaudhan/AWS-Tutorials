@@ -1,0 +1,57 @@
+import json
+#import urllib.parse
+
+def lambda_handler(event, context):
+    def add(x, y):
+        return x + y
+    
+    def sub(x, y):
+        return x - y
+    
+    def mul(x, y):
+        return x * y
+    
+    def div(x, y):
+        return x / y if y != 0 else None
+    
+    # Parse expression from query parameters
+    expression = event['queryStringParameters']['expression']
+    
+    # Replace %2b back to +
+    # expression = urllib.parse.unquote(expression)
+    
+    # Log input
+    print(f"Expression: {expression}")
+    
+    # Evaluate the expression
+    try:
+        result = eval(expression)
+    except:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'error': 'Invalid expression'})
+        }
+    
+    # Prepare the response body
+    res_body = {
+        'value': result
+    }
+    
+    # Prepare HTTP response
+    http_res = {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'application/json'
+        },
+        'body': json.dumps(res_body)
+    }
+    
+    return http_res
+
+
+https://2dpz8qeudk.execute-api.us-east-1.amazonaws.com/test/calculate?expression=4%2B2*59*100
+
+
+
+
+
